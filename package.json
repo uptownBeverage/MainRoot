@@ -9,7 +9,9 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "server": "nodemon index.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,7 @@
   "homepage": "https://github.com/bhavsingh2017/UptownBev#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
-    "concurrently": "^5.1.0",
+    "concurrently": "^5.2.0",
     "cookie-session": "^1.4.0",
     "express": "^4.17.1",
     "mongoose": "^5.9.10",
