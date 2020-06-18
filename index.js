@@ -1,14 +1,15 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cookieSession = require('cookie-session');
+const path = require('path');
 const passport = require('passport');
-const keys = require('./config/keys');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session');
 require('./models/User');
-require('./services/passport');
+require('./services/Passport');
 
-mongoose.connect(keys.mongoURI);
-
+const keys = require('./config/keys');
 const app = express();
+app.use(bodyParser.json());
 
 app.use(
   cookieSession({
@@ -16,12 +17,25 @@ app.use(
     keys: [keys.cookieKey]
   })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 require('./routes/authRoutes')(app);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running at ${PORT}`);
-});
+mongoose.connect(keys.mongoURI);
+
+if (process.env.NODE_ENV === 'production') {
+  console.log('__dirname', __dirname);
+  // app.use(express.static(path.join(__dirname, 'client/build')));
+  app.use(express.static('client/build'));
+
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server started at ${port}`));

@@ -1,17 +1,12 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import reduxThunk from 'redux-thunk';
+import routeProvider from './routeProvider';
+import configureStore from './store';
+import createRoutes from './routes';
+import reducers from './reducers';
+import axios from 'axios';
+window.axios = axios;
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const initialState = {};
+const store = configureStore(initialState, reducers, reduxThunk);
+ReactDOM.render(routeProvider(store, createRoutes()), document.querySelector('#root'));
