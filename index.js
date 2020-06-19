@@ -1,12 +1,12 @@
 const express = require('express');
-const path = require('path');
+// const path = require('path');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
-const port = require('./port');
+// const port = require('./port');
 const logger = require('./logger');
-const argv = require('./argv');
+// const argv = require('./argv');
 require('./models/User');
 require('./services/Passport');
 
@@ -40,12 +40,12 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const customHost = argv.host || process.env.HOST;
-const prettyHost = customHost || 'localhost';
+const PORT = process.env.PORT || 5000;
+const prettyHost = PORT || 'localhost';
 
-app.listen(port, 'localhost', async (err) => {
+app.listen(PORT, 'localhost', async (err) => {
   if (err) {
     return logger.error(err.message);
   }
-  logger.appStarted(port, prettyHost)
+  logger.appStarted(PORT, prettyHost)
 })

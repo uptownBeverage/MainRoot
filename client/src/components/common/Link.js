@@ -10,6 +10,7 @@ class Link extends React.Component {
     const className = `${baseClass} ${this.props.className}`.trim();
     const { style, children, roleButton, tabIndexSkip } = this.props;
     return (
+      // eslint-disable-next-line
       <a
         style={style}
         className={className}
