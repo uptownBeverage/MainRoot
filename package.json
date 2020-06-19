@@ -26,9 +26,12 @@
   "homepage": "https://github.com/bhavsingh2017/UptownBev#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chalk": "^4.1.0",
     "concurrently": "^5.2.0",
     "cookie-session": "^1.4.0",
     "express": "^4.17.1",
+    "ip": "^1.1.5",
+    "minimist": "^1.2.5",
     "mongoose": "^5.9.10",
     "nodemon": "^2.0.3",
     "passport": "^0.4.1",

@@ -8,11 +8,11 @@ import LandingComponent from './components/Landing';
 
 export default function createRoute() {
   return [
-    {
-      path: '/',
-      exact: true,
-      component: () => <LandingComponent />
-    },
+    // {
+    //   path: '/',
+    //   exact: true,
+    //   component: () => <LandingComponent />
+    // },
     {
       path: '/dashboard',
       exact: true,

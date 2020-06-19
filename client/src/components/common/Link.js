@@ -8,7 +8,7 @@ class Link extends React.Component {
       baseClass = 'textDecorationNone';
     }
     const className = `${baseClass} ${this.props.className}`.trim();
-    const { style, children, ariaExpanded, roleButton, tabIndexSkip } = this.props;
+    const { style, children, roleButton, tabIndexSkip } = this.props;
     return (
       <a
         style={style}
@@ -53,7 +53,6 @@ Link.propTypes = {
   id: PropTypes.string,
   analyticstrack: PropTypes.string,
   defaulttextDecorationUnderLine: PropTypes.bool,
-  ariaExpanded: PropTypes.bool,
   roleButton: PropTypes.bool,
   tabIndexSkip: PropTypes.bool,
 };

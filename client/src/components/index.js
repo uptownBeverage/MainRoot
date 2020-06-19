@@ -29,11 +29,9 @@ class MainLanding extends React.Component {
         <CustomRow>
           <CustomCol xs={1}></CustomCol>
           <CustomCol xs={10}>
-            <div className='routesComponent'>
-              {this.props.routesMap.map((route, i) => (
-                <Route key={i} exact={route.exact} path={route.path} component={route.component} />
-              ))}
-            </div>
+            {this.props.routesMap.map((route, i) => (
+              <Route key={i} exact={route.exact} path={route.path} component={route.component} />
+            ))}
           </CustomCol>
           <CustomCol xs={1}></CustomCol>
         </CustomRow>
