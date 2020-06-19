@@ -3,7 +3,8 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
-// const logger = require('./logger');
+const chalk = require('chalk');
+const logger = require('./logger');
 require('./models/User');
 require('./services/Passport');
 
@@ -23,8 +24,15 @@ app.use(passport.session());
 
 
 require('./routes/authRoutes')(app);
+require('./routes/productRoutes')(app);
+require('./routes/userRoutes')(app);
 
-mongoose.connect(keys.mongoURI);
+mongoose.connect(keys.mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => { 
+  console.log(chalk.greenBright('✓   MongoDB Connected...'));
+});
 
 if (process.env.NODE_ENV === 'production') {
   console.log('__dirname', __dirname);
@@ -38,13 +46,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 
-// const prettyHost = PORT || 'localhost';
-
-// app.listen(PORT, 'localhost', async (err) => {
-//   if (err) {
-//     return logger.error(err.message);
-//   }
-//   logger.appStarted(PORT, prettyHost)
-// })
 const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Server started at ${port}`));
+app.listen(port, (err) =>  {
+  if(err){
+    return logger.error(err);
+  }
+  logger.appStarted(port, 'localhost')
+});
