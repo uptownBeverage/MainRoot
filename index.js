@@ -1,12 +1,9 @@
 const express = require('express');
-// const path = require('path');
 const passport = require('passport');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
-// const port = require('./port');
-const logger = require('./logger');
-// const argv = require('./argv');
+// const logger = require('./logger');
 require('./models/User');
 require('./services/Passport');
 
@@ -40,12 +37,14 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-const PORT = process.env.PORT || 5000;
-const prettyHost = PORT || 'localhost';
 
-app.listen(PORT, 'localhost', async (err) => {
-  if (err) {
-    return logger.error(err.message);
-  }
-  logger.appStarted(PORT, prettyHost)
-})
+// const prettyHost = PORT || 'localhost';
+
+// app.listen(PORT, 'localhost', async (err) => {
+//   if (err) {
+//     return logger.error(err.message);
+//   }
+//   logger.appStarted(PORT, prettyHost)
+// })
+const port = process.env.PORT || 5000;
+app.listen(port, () => console.log(`Server started at ${port}`));
