@@ -4,8 +4,8 @@ const {
 } = mongoose;
 
 
-var delivery = {distributor:"Decresente", day:"Monday"};
-var location = {street_address:"123 Connor Ct", zip_code: "12309", city: "albany", state: "New York"}
+var delivery = {distributor:"", day:""}; //location based --> distributors are different based on location
+var location = {street_address:"", zip_code: "12309", city: "albany", state: "New York"} //self-explanatory
 
 
 const storeSchema = new Schema({
