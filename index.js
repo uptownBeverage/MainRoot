@@ -1,55 +1,35 @@
-const express = require('express');
-const passport = require('passport');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cookieSession = require('cookie-session');
-const chalk = require('chalk');
+const express = require("express");
+const bodyParser = require("body-parser");
 const logger = require('./logger');
-require('./models/User');
-require('./services/Passport');
+const user = require("./routes/user");
+const InitiateMongoServer = require("./config/db");
 
-const keys = require('./config/keys');
+// Initiate Mongo Server
+InitiateMongoServer();
+
 const app = express();
+
+// Middleware
 app.use(bodyParser.json());
 
-app.use(
-  cookieSession({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    keys: [keys.cookieKey]
-  })
-);
+// PORT
+const PORT = process.env.PORT || 4000;
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-require('./routes/authRoutes')(app);
-require('./routes/productRoutes')(app);
-require('./routes/userRoutes')(app);
-
-mongoose.connect(keys.mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => { 
-  console.log(chalk.greenBright('✓   MongoDB Connected...'));
+app.get("/", (req, res) => {
+  res.json({ message: "API Working now" });
 });
 
-if (process.env.NODE_ENV === 'production') {
-  console.log('__dirname', __dirname);
-  // app.use(express.static(path.join(__dirname, 'client/build')));
-  app.use(express.static('client/build'));
-
-  const path = require('path');
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
-}
+/**
+ * Router Middleware
+ * Router - /user/*
+ * Method - *
+ */
+app.use("/user", user);
 
 
-const port = process.env.PORT || 5000;
-app.listen(port, (err) =>  {
+app.listen(PORT, (err) =>  {
   if(err){
     return logger.error(err);
   }
-  logger.appStarted(port, 'localhost')
+  logger.appStarted(PORT, 'localhost')
 });

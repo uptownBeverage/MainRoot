@@ -1,19 +1,21 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { Row, Col } from 'react-flexbox-grid';
 import styled from 'styled-components';
 import ParentLandingComponent from './components';
-
+import NotificationBar from './components/common/NotificationBar';
 const CustomRow = styled(Row)`
+height: 100vh;
+width: 100vw;
+display: flex;
+flex-wrap: wrap;
+box-sizing: border-box;
 padding: 0;
-margin: 0;
-border: 0;
+margin: 0 !important;
 `;
+
 const CustomCol = styled(Col)`
-max-width: 1270px;
-margin-left: auto;
-margin-right: auto;
 padding: 0;
 `;
 
@@ -21,10 +23,11 @@ export default function provider(store, routeConfig) {
   return (
     <Provider store={store}>
       <CustomRow>
-        <CustomCol xs={12} className='grid noSidePad'>
-          <BrowserRouter>
+        <CustomCol xs={12}>
+          <NotificationBar />
+          <HashRouter>
             <ParentLandingComponent routesMap={routeConfig} />
-          </BrowserRouter>
+          </HashRouter>
         </CustomCol>
       </CustomRow>
     </Provider>

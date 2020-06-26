@@ -1,7 +1,7 @@
 {
-  "name": "website-files",
+  "name": "server",
   "version": "1.0.0",
-  "description": "This is a dashboard for Uptown Beverage",
+  "description": "",
   "main": "index.js",
   "engines": {
     "node": "12.16.3",
@@ -11,30 +11,19 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bhavsingh2017/UptownBev.git"
-  },
-  "author": "Altamont Beverage Corp",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/bhavsingh2017/UptownBev/issues"
-  },
-  "homepage": "https://github.com/bhavsingh2017/UptownBev#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "chalk": "^4.1.0",
     "concurrently": "^5.2.0",
-    "cookie-session": "^1.4.0",
     "express": "^4.17.1",
+    "express-validator": "^6.6.0",
     "ip": "^1.1.5",
-    "minimist": "^1.2.5",
-    "mongoose": "^5.9.10",
-    "nodemon": "^2.0.3",
-    "passport": "^0.4.1",
-    "passport-google-oauth20": "^2.0.0"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.20"
   }
 }

@@ -1,3 +1,15 @@
+export const setPageTitle = (title='')=>{
+  if (title && title !== '') {
+    title = title.replace("MVA BYOD", "");
+  }
+  // Set Web Title
+  document.title = title;
+  // Set Event listener for Back-Forward cache
+  window.addEventListener('pageshow', () => {
+    document.title = title;
+});
+}
+
 
 export const scrollIntoCenterView = (id) => {
   // If safari, fall back
@@ -15,15 +27,11 @@ export const scrollIntoTopView = (id) => {
     const elementRect = element.getBoundingClientRect();
     const absoluteElementTop = elementRect.top + window.pageYOffset;
     const top = absoluteElementTop - 50;
-    if (isSafari || isIE) {
-      // IE and Safari don't support this :(
-      window.scrollTo(0, top);
-    } else {
       window.scrollTo({
         top,
         behavior: 'smooth',
       });
-    }
+    
   }
 };
 
@@ -87,4 +95,23 @@ export const normalizeZipCode = (value) => {
   }
   // Reject other than numbers
   return value.replace(/[^\d]/g, '');
+};
+
+export const isMobile = () => {
+  if (
+    navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const deviceType = () => {
+  const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+  const isMobile = !(viewportWidth > 640);
+  return isMobile ? 'mobile' : 'desktop';
 };
