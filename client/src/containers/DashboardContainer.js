@@ -2,12 +2,11 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as landingActions from '../actions';
-import LoginComponent from'../components/Login';
+import DasboardComponent from'../components/DasboardComponent';
 
 const mapStateToProps = state => {
   return {
-    auth: state.authReducer,
-    errors: state.errors
+    ...state
   }
 }
 
@@ -16,4 +15,4 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const connectStateAndProps = connect(mapStateToProps, mapDispatchToProps);
-export default withRouter(connectStateAndProps(LoginComponent));
+export default withRouter(connectStateAndProps(DasboardComponent));

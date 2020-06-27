@@ -24,7 +24,6 @@ class Link extends React.Component {
           }
         }}
         onClick={(e) => {
-          console.log('e', e.target.id);
           e.preventDefault();
           this.props.clickFn();
         }}

@@ -14,14 +14,18 @@ const auth = require('../middleware/auth');
 
 router.post("/signup",
   [
-    check("user_name", "Please Enter a Valid Username").not().isEmpty(),
-    check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({ min: 6 })
+    check("first_name", "First name is required to register.").not().isEmpty(),
+    check("last_name", "Lase name is required to register.").not().isEmpty(),
+    check("user_name", "User name is required to register.").not().isEmpty(),
+    check("userRole", "User role is required to register.").not().isEmpty(),
+    check("email", "Email is required to register.").isEmail(),
+    check("phone", "Phone is required to register.").not().isEmpty(),
+    check("password", "Please enter a valid password.").isLength({ min: 6 })
   ],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(201).json({
+      return res.status(200).json({
         errors: errors.array(),
         existingUser: false,
         newUser: false,
@@ -31,13 +35,13 @@ router.post("/signup",
     }
 
     const {
-      first_name = '',
-      last_name = '',
+      first_name,
+      last_name,
       user_name,
+      userRole,
       email,
-      phone = '',
+      phone,
       password,
-      role = ''
     } = req.body;
     try {
       let user = await User.findOne({
@@ -63,7 +67,7 @@ router.post("/signup",
         email,
         phone,
         password,
-        role,
+        userRole,
         createdAt: Date.now()
       });
 
@@ -113,28 +117,23 @@ router.post("/signup",
  */
 router.post(
   "/login",
-  [
-    check("email", "Please enter a valid email").isEmail(),
-    check("password", "Please enter a valid password").isLength({
-      min: 6
-    })
-  ],
   async (req, res) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return res.status(422).json({
-        errors: errors.array()
-      });
-    }
-
-    const { email, password } = req.body;
+    
+    const { user_name, email, password } = req.body;
     try {
-      let user = await User.findOne({
-        email
-      });
+      let user = null;
+      if(user_name){
+         user = await User.findOne({
+          user_name
+        });
+      } else {
+        user = await User.findOne({
+          email
+        });
+      }
+
       if (!user)
-        return res.status(400).json({
+        return res.status(200).json({
           message: "User does not exist."
         });
 
@@ -145,8 +144,12 @@ router.post(
         });
 
       const payload = {
-        user: {
-          id: user.id
+        loggedInuser: {
+          id: user.id,
+          name: `${user.first_name} ${user.last_name}`,
+          email: user.email,
+          phone: user.phone,
+          userRole: user.userRole
         }
       };
 
@@ -159,6 +162,7 @@ router.post(
         (err, token) => {
           if (err) throw err;
           res.status(200).json({
+            success: true,
             token
           });
         }
@@ -186,11 +190,15 @@ router.get("/me", auth, async (req, res) => {
     res.send({ message: "Error in Fetching user" });
   }
 });
+router.get('/current_user', (req, res) => {
+  res.send(req.user);
+});
 
-
-router.get('/logout', function(req, res) {
-  req.logout();
-  res.redirect('/');
+router.get('/logoutUser', function(req, res) {
+  res.status(200).json({
+    success: true,
+    token: null
+  });
 });
 
 module.exports = router;

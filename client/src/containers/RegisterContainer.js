@@ -6,8 +6,6 @@ import * as notifications from '../components/common/NotificationBar/actions';
 import RegisterComponent from'../components/Register';
 
 const mapStateToProps = state => {
-  console.log('state', state);
-
   return {
     userState: state && state.authReducer ?  state.authReducer : {}
   }

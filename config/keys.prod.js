@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 const chalk = require('chalk');
 
-const MONGOURI = "mongodb+srv://nodeauthdbuser:vaDZA2HcNAr1fy2B@nodeauthcluster-4hm3y.mongodb.net/node-auth?retryWrites=true&w=majority";
+const mongoURI = process.env.MONGOURI;
 
 const InitiateMongoServer = async () => {
   try {
-    await mongoose.connect(MONGOURI, {
+    await mongoose.connect(mongoURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });

@@ -1,200 +1,139 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { Row, Col } from 'react-flexbox-grid';
+
 import styled from 'styled-components';
+import { deviceType, setPageTitle } from '../utils';
 
 
-
-const CustomRow = styled(Row)`
-height: 100%;
-display:flex;
-align-items:center;
-text-align:center;
-padding: 0;
-margin: 0 !important;
-width: 100%;
+const MainContainer = styled.div`
+padding-top: 8vh;
+padding-bottom: 8vh;
 `;
 
-const CustomCol = styled(Col)`
-flex-grow: 0;
-padding: 0;
-height: 100vh;
-&:first-child {
+const FluidRow = styled.div`
+display: flex;
+flex-wrap: wrap;
+justify-content: center!important;
+box-sizing: border-box;
+flex: 0 1 auto;
+width: 100%;
+max-width: 325px;
+padding: 15px;
+margin: 8vh auto 0 auto;
+`;
+
+
+export default function MyForm(props) {
   
-}
-&:nth-child(2) {
-  background: #fff;
-}
-`;
+  const { register, handleSubmit, watch, errors } = useForm();
+  const [emailActive, setEmailStatus] = useState(false);
+  const [device, setDevice] = useState(deviceType);
+  
+  const onSubmitForm = (formData) => {
+    props.actions.signInUser(formData, (response) => {
+      console.log('response', response);
+      if(response && (response.token && response.token !== '')){
+        props.history.push('/dashboard')
+      }
+    });
+    
+  }
+  const handleLoginOption = () => {
+    setEmailStatus(!emailActive);
+  }
 
-const ColGeneral = styled(Col)`
-text-align: center;
-padding: 0;
-`;
+  const updateDimensions = () => {
+   setDevice(deviceType())
+  }
+  useEffect(() => {
+    console.log('LOGIN PROPS', props);
+    // If logged in and user navigates to Login page, should redirect them to dashboard
+    if (props.auth && props.auth.isAuthenticated) {
+      props.history.push("/dashboard");
+    }
 
-const RowNoMargin = styled(Row)`
-margin-bottom: 0 !important;
-`;
+      window.addEventListener("resize", updateDimensions);
+      return () => window.removeEventListener("resize", updateDimensions);
+  },[]); 
 
-const FormLabels = styled.div`
-text-align:left;
-font-size: .8rem;
-color: #9e9e9e;
-`;
-const FormError = styled.div`
-text-align:left;
-font-size: .8rem;
-color: #e51c23 !important;
-`;
-
-const FormInput = styled.input`
-background-color: transparent;
-border: none;
-border-bottom: 1px solid #9e9e9e;
-border-radius: 0;
-outline: none;
-height: 3rem;
-width: 100%;
-font-size: 16px;
-margin: 0 0 0 0 !important;
-padding: 0;
--webkit-box-shadow: none;
-box-shadow: none;
--webkit-box-sizing: content-box;
-box-sizing: content-box;
--webkit-transition: border .3s, -webkit-box-shadow .3s;
-transition: border .3s, -webkit-box-shadow .3s;
-transition: box-shadow .3s, border .3s;
-transition: box-shadow .3s, border .3s, -webkit-box-shadow .3s;
-`;
-
-const FieldContainer = styled.div`
-width: 100%;
-height: 100%;
-display: block;
-padding-bottom: 2.5vh;
-`;
-
-
-
-function onSubmitForm(evt, formData) {
-  evt.preventDefault();
-  console.log("The status of formData", formData);
-  // alert("Hi your phone number is: " + formData.phoneNumber);
-}
-
-export default function MyForm() {
-  const { register, handleSubmit, errors } = useForm();
-  console.log("SUBMIT ERRORS", errors);
-  // const showDatePicker = watch("showDatePicker");
+  const columnSize = device === 'desktop' ? 12 : 12;
+ 
   return (
-    <CustomRow>
-      
-      <Col xs={12} style={{textAlign: 'left'}}>
-        <Link to="/" className="btn-flat waves-effect" >
-          <i className="material-icons left">keyboard_backspace</i> Back to home
-        </Link>
-      </Col>
-      <Col xs={12}>
-        <h4>
-          <b>Login</b> below
-        </h4>
-        <p className="grey-text text-darken-1">
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
-      </Col>
-
-      <Col xs={6} xsOffset={3} style={{ padding: '2vh' }}>
-       
-        {/*
-           <p>  Your phone number is:
-          <br /> {watch("phoneNumber")}
-        </p>
-          <form onSubmit={handleSubmit(onSubmitForm)}>
-          <label>
-            Phone Number:
-            <input
-              type="text"
-              name="phoneNumber"
-              ref={register({
-                required: {
-                  value: true,
-                  message: "Phone number is required",
-                },
-                minLength: {
-                  value: 12,
-                  message: "Phone number should be minimum length of 12",
-                },
-              })}
-            />
-          </label>
-          <br />
-          <label>
-            Show the Date picker:
-            <input type="checkbox" ref={register} name="showDatePicker" />
-          </label>
-          <br />
-          {showDatePicker && <input type="date" ref={register} name="dob" />}
-          <br />
-          <input type="submit" value="Submit" />
-            </form>*/}
-
-        <form noValidate onSubmit={handleSubmit(onSubmitForm)}>
-            <div className="input-field col s12">
+    <MainContainer>
+      <FluidRow>
+        <div className="col-12 text-center mb-5">
+          <h4><b>Sign in</b></h4>
+          {/*<p className="grey-text text-darken-1 ">
+            Don't have an account? <Link to="/register">Register</Link>
+          </p>*/}
+        </div>
+        
+        <div className={`col-${columnSize}`}>
+          <div style={{height: '4px', backgroundColor: '#000', marginBottom: '15px', marginTop: '8px', width: '100%'}}></div>
+          <form noValidate onSubmit={handleSubmit(onSubmitForm)}>
+            {!emailActive && <div>
+              <label htmlFor="user_name" className="sr-only">Username</label>
+              <div className="input-group m-0">
+                <input
+                  style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}
+                  className="form-control"
+                  id="user_name"
+                  placeholder="Username" 
+                  aria-label="Username"
+                  name="user_name"
+                  type="text"
+                  ref={register({
+                    required: {
+                      value: true,
+                      message: "User name is required",
+                    },
+                    minLength: {
+                      value: 2,
+                      message: "User name should be minimum length of 5",
+                    },
+                  })}
+                />
+              
+              </div>
+              <span className="alert-warning text-left small">
+                {errors.user_name ?  errors.user_name.message : ''}
+              </span>
+            </div>}
+              
+            {emailActive && <div><div className="input-group m-0">
+              <label htmlFor="email" className="sr-only">Email</label>
               <input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="Username"
-                ref={register({
-                  required: {
-                    value: true,
-                    message: "User name is required",
-                  },
-                  minLength: {
-                    value: 5,
-                    message: "user name should be minimum length of 5",
-                  },
-                })}
-              />
-              <p className="grey-text text-darken-1">
-                <Link to="/register">Log in with Email Address</Link>
-              </p>
-              <span className="red-text">
-              {errors &&  Object.keys(errors).length && errors['username'].message ?  errors['username'].message : ''}
-            </span>
-            </div>
-            <div className="input-field col s12">
-              <input
-                
+                style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}
+                className="form-control"
                 id="email"
                 name="email"
                 type="email"
                 placeholder="Email"
                 ref={register({
-                  required: {
-                    value: true,
-                    message: "Email is required",
-                  },
-                  minLength: {
-                    value: 5,
-                    message: "user name should be minimum length of 5",
-                  },
+                  required: 'Email is required',
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+                    message: 'invalid email address'
+                  }
                 })}
               />
-              <span className="red-text">
-              {errors &&  Object.keys(errors).length && errors['email'].message ? errors['email'].message : ''}
-            </span>
             </div>
-            <div className="input-field col s12">
-              <label htmlFor="password" style={{display:'none'}}>Password</label>
+            <span className="alert-warning text-left small">
+            {errors.email ? errors.email.message : ''}
+            </span></div>}
+            
+            <div className="input-group m-0">
+              <label htmlFor="password" className="sr-only">Password</label>
               <input
+              style={{ borderTopLeftRadius: 0, borderTopRightRadius: 0}}
+                className="form-control"
                 name="password" 
                 id="password"
                 type="password"
                 placeholder="Password"
                 ref={register({
+                  validate: value => value !== 'test123' || 'Too common password, you can do better!',
                   required: {
                     value: true,
                     message: "Password is required",
@@ -204,33 +143,44 @@ export default function MyForm() {
                     message: "user name should be minimum length of 5",
                   },
                 })}
-                
-              />
+              />  
               
-              <span className="red-text">
-                {errors &&  Object.keys(errors).length && errors['password'].message ? errors['password'].message : ''}
-              </span>
-              <p className="grey-text text-darken-1" style={{textAlign: 'left', marginTop: '0.5vh'}}>
-                <Link to="/register">Forgot password?</Link>
-              </p>
             </div>
-            <div className="col s12">
-              <button
-                style={{
-                  width: "150px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "3.5rem"
-                }}
-                type="submit"
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-              >
-                Login
-              </button>
+            <span className="alert-warning text-left small">
+              {errors.password ? errors.password.message : ''}
+            </span>
+
+            
+            <div className="form-check my-2">
+              <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" onClick={() => handleLoginOption()}/>
+              <label className="form-check-label" htmlFor="defaultCheck1">
+                {emailActive ? 'Log in with Username' : 'Log in with Email'}
+              </label>
+            </div>
+            <div className="row align-items-center my-4">
+                <div className="col-sm-12">
+                  <button
+                  style={{
+                    borderRadius: "3px",
+                    letterSpacing: "1.5px",
+                  }}
+                  type="submit"
+                  className="btn btn-lg btn-primary btn-block"
+                >
+                  Login
+                </button>
+                </div>
+                <div className="col-sm-12">
+                  <div className="small text-center mt-4">
+                    <Link to="/register">Forgot password?</Link>
+                  </div>
+                </div>
             </div>
           </form>
-      </Col>
-    </CustomRow>
+        </div>
+      </FluidRow>
+      
+  </MainContainer>
     
   );
 }

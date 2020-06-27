@@ -1,106 +1,29 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Field, reduxForm } from 'redux-form'
-import { Row, Col } from 'react-flexbox-grid';
 import styled from 'styled-components';
 import { deviceType, setPageTitle } from '../utils';
 
-const CustomRow = styled(Row)`
-height: 100%;
-display:flex;
-align-items:center;
-text-align:center;
-padding: 0;
-margin: 0 !important;
+
+const MainContainer = styled.div`
+padding-top: 8vh;
+padding-bottom: 8vh;
+`;
+
+const FluidRow = styled.div`
+display: flex;
+flex-wrap: wrap;
+justify-content: center!important;
+box-sizing: border-box;
+flex: 0 1 auto;
 width: 100%;
+max-width: 325px;
+padding: 15px;
+margin: 4vh auto 0 auto;
+
 `;
 
-const CustomCol = styled(Col)`
-flex-grow: 0;
-padding: 0;
-height: 100vh;
-&:first-child {
-  
-}
-&:nth-child(2) {
-  background: #fff;
-}
-`;
 
-const ColGeneral = styled(Col)`
-text-align: center;
-padding: 0;
-`;
-
-const RowNoMargin = styled(Row)`
-margin-bottom: 0 !important;
-`;
-
-const FormLabels = styled.div`
-text-align:left;
-font-size: .8rem;
-color: #9e9e9e;
-`;
-const FormError = styled.div`
-text-align:left;
-font-size: .8rem;
-color: #e51c23 !important;
-`;
-
-const FormInput = styled.input`
-background-color: transparent;
-border: none;
-border-bottom: 1px solid #9e9e9e;
-border-radius: 0;
-outline: none;
-height: 3rem;
-width: 100%;
-font-size: 16px;
-margin: 0 0 0 0 !important;
-padding: 0;
--webkit-box-shadow: none;
-box-shadow: none;
--webkit-box-sizing: content-box;
-box-sizing: content-box;
--webkit-transition: border .3s, -webkit-box-shadow .3s;
-transition: border .3s, -webkit-box-shadow .3s;
-transition: box-shadow .3s, border .3s;
-transition: box-shadow .3s, border .3s, -webkit-box-shadow .3s;
-`;
-
-const FormSelect = styled.select`
-background-color: rgba(255,255,255,0.9);
-width: 100%;
-padding: 5px;
-border: 1px solid #f2f2f2;
-border-radius: 2px;
-height: 3rem;
-text-transform: none;
-font-size: 100%;
-line-height: 1.18;
-margin: 0;
-`;
-
-const FormSelectOption = styled.option`
-font-weight: normal;
-display: block;
-white-space: pre;
-min-height: 1.4em;
-`;
-
-const FieldContainer = styled.div`
-width: 100%;
-height: 100%;
-display: block;
-padding-bottom: 2.5vh;
-`;
-
-const ButtonGroup = styled.div`
-display: flex:
-`;
-const ButtonInnerGroup = styled.div`
-flex-direction: row;
-`;
 
 const maxLength = (value) => {
   if (!value) {
@@ -111,7 +34,7 @@ const maxLength = (value) => {
 
 const validate = (values) => {
   const errors = {}
- const { first_name, last_name, user_name, email, phone, password, confirmpassword} = values;
+ const { first_name, last_name, user_name, email, phone, password, confirmpassword , userRole} = values;
 
   
   if (!first_name) {
@@ -133,14 +56,19 @@ const validate = (values) => {
   }
   if (!phone) {
     errors.phone = 'Phone number is required';
-  } // else if (!/^(\+?1-?)?(\([2-9]([02-9]\d|1[02-9])\)|[2-9]([02-9]\d|1[02-9])).?[2-9]([02-9]\d|1[02-9]).?\d{4}$/i.test(phone.trim())) {
-  //   errors.phone = 'Please enter a valid 10 digit phone number.';
-  // }
+  } else if (!/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/i.test(phone.trim())) {
+     errors.phone = 'Please enter a valid 10 digit phone number.';
+   }
   if (!user_name) {
     errors.user_name = 'User name is required';
-  } else if (!/^[a-zA-Z\- ',\s]+$/i.test(user_name.trim())) {
-    errors.user_name = 'Please enter a valid user name';
-  }
+  } 
+
+  if (!userRole) {
+    errors.userRole = 'Role is required';
+  } 
+  // else if (!/^[a-zA-Z\- ',\s]+$/i.test(user_name.trim())) {
+  //   errors.user_name = 'Please enter a valid user name';
+  // }
   
   if (!password) {
     errors.password = 'Password is required';
@@ -157,202 +85,224 @@ const validate = (values) => {
 }
 
 const renderField = ({ input, label, type, meta: { touched, error } }) => (
-  <FieldContainer>
-    <FormLabels>{label}</FormLabels>
-    <FormInput {...input} type={type} />
-    {touched && error && <FormError>{error}</FormError>}
-  </FieldContainer>
+  <div>
+    <label htmlFor={input.name} style={{ fontSize: '10px', lineHeight:'12px'}}>{label}</label>
+    <div className="input-group m-0">
+      <input 
+      {...input} 
+      className={`${touched && error ? 'formerror' : 'form-control'}`}
+      style={{
+        margin: 0, 
+        height: '36px',
+        width: '100%',
+        fontSize: '12px',
+        paddingLeft:'8px'
+
+      }}
+      />
+      {touched && error && <div style={{display: 'block', width:'100%'}}><p style={{ fontSize: '10px', lineHeight:'12px'}}>{error}</p></div>}
+      </div>
+      
+  </div>
 )
 
 const renderDropdown = ({ input, label, meta: { touched, error } }) => (
-  <FieldContainer>
-    <FormLabels>{label}</FormLabels>
-    <FormSelect style={{display: 'block'}} {...input}>
-      <FormSelectOption value="">Select Role</FormSelectOption>
-      {colors.map(val => (
-        <FormSelectOption value={val} key={val}>
-          {val}
-        </FormSelectOption>
-      ))}
-    </FormSelect>
-    {touched && error && <FormError>{error}</FormError>}
-  </FieldContainer>
+  <div>
+    <label htmlFor={input.name} style={{ fontSize: '10px', lineHeight:'12px'}}>{label}</label>
+    <select 
+    className="custom-select"
+    className={`${touched && error ? 'custom-select error' : 'custom-select'}`}
+    {...input} >
+    {colors.map(val => (
+      <option value={val} key={val}>{val}</option>
+    ))}
+    </select>
+    {touched && error && <div style={{display: 'block', width:'100%'}}><p style={{ fontSize: '10px', lineHeight:'12px'}}>{error}</p></div>}
+  </div>
 )
 
 
 const colors = ['Owner', 'Manager', 'Employee', 'Servant', 'Unwanted', 'Enemy'];
 
-const RegisterUser = (props) => {
+class RegisterUser extends React.Component {
+ state = {
+      deviceType: deviceType()
+  };
+
+  updateDimensions = () => {
+    this.setState({
+      deviceType: deviceType()
+    })
+  }
+  componentDidMount() {
+    setPageTitle('Employee login');
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
+  }
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.updateDimensions);
+  }
+  render(){
   //props.actions.showInfoNotification('hello');
-  const { error, handleSubmit, pristine, reset, submitting } = props
-  const columnSize = deviceType() === 'desktop' ? 6 : 12;
-  const offset = deviceType() === 'desktop' ? 3 : 0;
+  const { error, handleSubmit, pristine, reset, submitting } = this.props
+  const columnSize = deviceType() === 'desktop' ? 12 : 12;
+  const device = deviceType();
   const handleFormSubmit = (values) =>{
-    props.actions.registerUser(values, (response) => {
-      // const userName = `${response.first_name} ${response.last_name}`;
-      // sessionStorage.setItem('userName', userName);
+    this.props.actions.registerUser(values, (response) => {
       if(response && !response.errors && (response.existingUser || response.newUser)){
-        props.history.push('/login')
+        this.props.history.push('/login')
       }
-      /**
-       * errors: null
-        existingUser: false
-        first_name: "Gagandeep"
-        last_name: "Bawa"
-        message: "User Gagandeep Bawa  has been created successfully with user name as sssssssss."
-        newUser: true
-        token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNWVmNGIyMGNjNmVhYzJkY2VjYmNhNGI1In0sImlhdCI6MTU5MzA5NDY2OCwiZXhwIjoxNTkzMTA0NjY4fQ.IlXeVkBotazzChkeawR-4f4qO3C-N8zP0HW_-GFMhSE"
-        user_name: "sssssssss"
-       */
     });
   }
+  
   return (
-    <CustomRow>
-        
-      <Col xs={12} style={{textAlign: 'left'}}>
-        <Link to="/" className="btn-flat waves-effect">
-          <i className="material-icons left">keyboard_backspace</i> Back to home
-        </Link>
-      </Col>
-      <Col xs={12}>
+    <MainContainer>
+      <FluidRow className="no-gutters">
+        <div className="col-12 text-center mb-5">
           <h4><b>Register</b> below</h4>
           <p className="grey-text text-darken-1">Already have an account? <Link to="/login">Log in</Link></p>
+        </div>
+        <div style={{height: '4px', backgroundColor: '#000', marginBottom: '8px', marginTop: '8px', width: '100%'}}></div>
+        <div className={`col-${columnSize}`}>
+          <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
           
-      </Col>
-      
-      <Col xs={columnSize} xsOffset={offset} style={{ padding: '2vh' }}>
-        <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
-          <RowNoMargin>
-            <Col xs={12} sm={6} md={6} lg={6}>
-              <Field
-                name="first_name"
-                id="first_name"
-                type="text"
-                component={renderField}
-                label="First name"
-               
-              />
-            </Col>
-            <Col xs={12} sm={6} md={6} lg={6}>
-              <Field
-                name="last_name"
-                id="last_name"
-                type="text"
-                component={renderField}
-                label="Last name"
-              />
-            </Col>
-          </RowNoMargin>
-          <RowNoMargin>
-            <Col xs={12} sm={8} md={8} lg={8}>
-              <Field
-                name="user_name"
-                id="user_name"
-                type="text"
-                component={renderField}
-                label="User name"
-               
-              />
-            </Col>
-            <Col xs={12} sm={4} md={4} lg={4}>
-              <div>
-                <Field 
-                  id="userRole" 
-                  name="userRole" 
-                  component={renderDropdown}
-                  label="Role"
-                />
-            </div>
-            </Col>
-          </RowNoMargin>
-          <RowNoMargin>
-            <Col xs={12} sm={6} md={6} lg={6}>
-              <Field
-                name="email"
-                id="email"
-                type="text"
-                component={renderField}
-                label="Email"
-               
-              />
-            </Col>
-            <Col xs={12} sm={6} md={6} lg={6}>
-              <div>
-                <Field 
-                  id="phone" 
-                  name="phone" 
+            <div className="row no-gutters">
+              <div className="col-6 pr-2">
+                <Field
+                  name="first_name"
+                  id="first_name"
+                  type="text"
                   component={renderField}
-                  type="tel"
-                  label="Phone"
-                  pattern="[0-9]*"
-                  mask="999.999.9999"
-                  normalize={maxLength} 
+                  label="First name"
                 />
+              </div>
+              <div className="col-6">
+                <Field
+                  name="last_name"
+                  id="last_name"
+                  type="text"
+                  component={renderField}
+                  label="Last name"
+                />
+              </div>
             </div>
-            </Col>
-          </RowNoMargin>
-          <RowNoMargin>
-            <Col xs={12} sm={6} md={6} lg={6}>
-              <Field
-                name="password"
-                id="email"
-                type="password"
-                component={renderField}
-                label="Password"
-               
-              />
-            </Col>
-            <Col xs={12} sm={6} md={6} lg={6}>
-              <div>
-                <Field 
-                  id="confirmpassword" 
-                  name="confirmpassword" 
+            <div className="row no-gutters">
+              <div className="col-sm-12 col-md-6 pr-2">
+                <Field
+                  name="user_name"
+                  id="user_name"
+                  type="text"
+                  component={renderField}
+                  label="User id [5 to 20 characters]"
+                />
+              </div>
+              <div className="col-sm-12 col-md-6">
+                <div>
+                  <Field 
+                    id="userRole" 
+                    name="userRole" 
+                    component={renderDropdown}
+                    label="Role"
+                  />
+                  
+              </div>
+              </div>
+            </div>
+            <div className="row no-gutters">
+              <div className="col-sm-12 col-md-12">
+                <Field
+                  name="email"
+                  id="email"
+                  type="text"
+                  component={renderField}
+                  label="Email"
+                
+                />
+              </div>
+            </div>
+            <div className="row no-gutters">
+              <div className="col-sm-6 col-md-6">
+                <div>
+                  <Field 
+                    id="phone" 
+                    name="phone" 
+                    component={renderField}
+                    type="tel"
+                    label="Phone"
+                    pattern="[0-9]*"
+                    mask="999.999.9999"
+                    normalize={maxLength} 
+                  />
+              </div>
+              </div>
+              {device === 'desktop' && <div className="col-sm-6 col-md-6" style={{marginTop: '18px'}}>
+                <div style={{ paddingTop: '12px', paddingLeft: '12px'}}><p style={{fontSize: '8px', lineHeight: '12px', marginBottom: 0}}>
+                This is in case we can’t reach you on your primary number.
+              </p></div>
+              </div>}
+            </div>
+            <div className="row no-gutters">
+              <div className="col-sm-12 col-md-6 pr-2">
+                <Field
+                  name="password"
+                  id="email"
                   type="password"
                   component={renderField}
-                  label="Confirm Password"
+                  label="Password"
+                
                 />
+              </div>
+              <div className="col-sm-12 col-md-6">
+                <div>
+                  <Field 
+                    id="confirmpassword" 
+                    name="confirmpassword" 
+                    type="password"
+                    component={renderField}
+                    label="Confirm Password"
+                  />
+              </div>
+              </div>
             </div>
-            </Col>
-          </RowNoMargin>
-          {error && <strong>{error}</strong>}
-          <ButtonGroup>
-            <ButtonInnerGroup>
-              <button 
-                type="submit" 
-                disabled={submitting}
-                style={{
-                  width: "150px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "1rem",
-                  marginRight: "1rem",
-                }}
-                className="btn btn-large waves-effect waves-light hoverable blue accent-3"
+            {error && <strong>{error}</strong>}
+            <div className="btn-group mt-3">
+               
+                <button 
+                  type="submit" 
+                  disabled={submitting}
+                  style={{
+                    width: "150px",
+                    borderRadius: "3px",
+                    letterSpacing: "1.5px",
+                    marginRight: "1rem",
+                  }}
+                  className="btn btn-primary"
+                  >
+                  Sign up
+                </button>
+                {<button 
+                  type="button" 
+                  disabled={pristine || submitting} 
+                  onClick={reset}
+                  style={{
+                    width: "140px",
+                    borderRadius: "3px",
+                    letterSpacing: "1.5px",
+                    lineHeight: '1.2rem'
+                  }}
+                  className="btn btn-link"
                 >
-                Sign up
-              </button>
-              <button 
-                type="button" 
-                disabled={pristine || submitting} 
-                onClick={reset}
-                style={{
-                  width: "140px",
-                  borderRadius: "3px",
-                  letterSpacing: "1.5px",
-                  marginTop: "1rem",
-                  lineHeight: '1.2rem'
-                }}
-                className="btn btn-large btn-flat waves-effect white black-text"
-              >
-                Clear Values
-              </button>
-            </ButtonInnerGroup>
-          </ButtonGroup>
-        </form>
-      </Col>
-    </CustomRow>
+                  Reset
+                </button>}
+               
+            </div>
+          </form>
+        </div>
+      </FluidRow>
+    </MainContainer>
 
   )
+  }
 }
 
 // class RegisterUser extends Component {

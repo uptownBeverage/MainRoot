@@ -1,14 +1,34 @@
 import React, { Component } from 'react';
-//import axios from 'axios';
 import { Row, Col } from 'react-flexbox-grid';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import logo from '../assets/images/logo4.png';
 import { deviceType } from '../utils';
 import { Link } from "react-router-dom";
 
-// import LoginForm from './Login';
-// import Register from './Register';
  
+const Animation = keyframes`
+  0% { top: -50em; }
+  100% { top: 0em;}
+`;
+
+const AnimationContainer = styled.div`
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.5em;
+  background-color: #252525;
+`;
+
+const AnimationContent = styled.div`
+  position: relative;
+  animation: ${Animation};
+  animation-duration: 4s;
+  animation-fill-mode: forwards;
+  height: 95vh;
+`;
+
 const CustomRow = styled(Row)`
 height: 100vh;
 display:flex;
@@ -18,17 +38,8 @@ padding: 0;
 margin: 0 !important;
 width: 100%;
 `;
-//  background-color: #252525;
-const CustomCol = styled(Col)`
-padding: 0;
-height: 100vh;
-background-color: #252525;
-&:first-child {
-}
-&:nth-child(2) {
-  background: #fff;
-}
-`;
+
+
 const ImgContainer = styled.div`
 position: relative;
 height: 100%;
@@ -37,8 +48,8 @@ height: 100%;
 const MobileImage = styled.img`
 height: auto;
 width: 100%;
-max-height: 725px;
-max-width: 725px;
+max-height: 550;
+max-width: 675px;
 `;
 const TextContainer = styled.div`
 position: absolute;
@@ -61,6 +72,9 @@ class LoginPage extends Component {
     })
   }
   componentDidMount() {
+    if (this.props.authReducer && this.props.authReducer.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
     // this.props.actions.showInfoNotification('hello');
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
@@ -69,87 +83,21 @@ class LoginPage extends Component {
     window.removeEventListener("resize", this.updateDimensions);
   }
   render() {
-  console.log('this.props', this.props);
+    console.log('LANDING PROPS', this.props);
     return (
       <CustomRow>
-        {<CustomCol xs={12} sm={12} md={12} lg={12}> 
-          <ImgContainer>
-            <MobileImage src={logo} />
-            <TextContainer>
-              <Row style={{ marginBottom: 0}}>
-                <Col xs={6} style={{ textAlign:"right", paddingRight: '2vw'}}>
-                  <Link
-                    to="/register"
-                    style={{
-                      width: "140px",
-                      borderRadius: "3px",
-                      letterSpacing: "1.5px"
-                    }}
-                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                  >
-                    Register
-                  </Link>
-                </Col>
-                <Col xs={6} style={{ textAlign:"left", paddingLeft: '2vw'}} >
-                  <Link
-                      to="/login"
-                      style={{
-                        width: "140px",
-                        borderRadius: "3px",
-                        letterSpacing: "1.5px"
-                      }}
-                      className="btn btn-large btn-flat waves-effect white black-text"
-                    >
-                      Log In
-                    </Link>
-                </Col>
-              </Row>
-            
-            </TextContainer>
-          </ImgContainer>
-        </CustomCol>}
-        
-        {/*<ImageWrapper></ImageWrapper>
-          <CustomCol xs={12} sm={4} md={4} lg={4}> 
-          <CustomRow>
-            <ColGeneral xs={12}>
-            {this.state.deviceType === 'mobile' && <div>
+          <AnimationContainer>
+            <AnimationContent>
+              <ImgContainer>
                 <MobileImage src={logo} />
-            </div>}
-              <Text><h4><b>Employee Dashboard</b></h4></Text>
-              
-              <CustomRow>
-                <Col xs={12}>
-                  <Link
-                    to="/register"
-                    style={{
-                      width: "140px",
-                      borderRadius: "3px",
-                      letterSpacing: "1.5px"
-                    }}
-                    className="btn btn-large waves-effect waves-light hoverable blue accent-3"
-                  >
-                    Register
+                <TextContainer>
+                  <Link to="/login" style={{ letterSpacing: '1.5px',color: '#FFF' }}>
+                    Log In
                   </Link>
-                </Col>
-                <Col xs={12} >
-                  <Link
-                      to="/login"
-                      style={{
-                        width: "140px",
-                        borderRadius: "3px",
-                        letterSpacing: "1.5px",
-                        marginTop: '3vh'
-                      }}
-                      className="btn btn-large btn-flat waves-effect white black-text"
-                    >
-                      Log In
-                    </Link>
-                </Col>
-              </CustomRow>
-            </ColGeneral>
-        </CustomRow>
-        </CustomCol>*/}
+                </TextContainer>
+              </ImgContainer>
+            </AnimationContent>
+        </AnimationContainer>
       </CustomRow>
     );
   }
