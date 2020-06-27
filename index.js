@@ -33,9 +33,9 @@ if (process.env.NODE_EN === 'production') {
 // PORT
 const PORT = process.env.PORT || 4000;
 
-app.get("/", (req, res) => {
-  res.json({ message: "API Working now" });
-});
+// app.get("/", (req, res) => {
+//   res.json({ message: "API Working now" });
+// });
 
 /**
  * Router Middleware
