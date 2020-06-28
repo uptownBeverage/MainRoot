@@ -58,15 +58,12 @@ export default function MyForm(props) {
   },[]); 
 
   const columnSize = device === 'desktop' ? 12 : 12;
- 
+ const initialUserName = props.auth && props.auth.user_name ? props.auth.user_name : '';
   return (
     <MainContainer>
       <FluidRow>
         <div className="col-12 text-center mb-5">
           <h4><b>Sign in</b></h4>
-          {/*<p className="grey-text text-darken-1 ">
-            Don't have an account? <Link to="/register">Register</Link>
-          </p>*/}
         </div>
         
         <div className={`col-${columnSize}`}>
@@ -76,6 +73,7 @@ export default function MyForm(props) {
               <label htmlFor="user_name" className="sr-only">Username</label>
               <div className="input-group m-0">
                 <input
+                  defaultValue={initialUserName}
                   style={{ borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}
                   className="form-control"
                   id="user_name"
